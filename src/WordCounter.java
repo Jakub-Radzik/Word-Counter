@@ -1,42 +1,35 @@
 import java.util.*;
+import java.util.function.Function;
 
 public class WordCounter {
 
-    private String content;
-    private ArrayList<String> words;
-    private Map<String, Integer> wordCounter = new HashMap<String, Integer>();
     private Integer counter = 0;
-
-    public WordCounter(String text) {
-        this.content = text;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     void counterIncrement(){
         this.counter++;
     }
 
-    public void killerChars(){
-        this.setContent(this.getContent().replaceAll("[@#$%^&*()_+=,.!?:;-]", " "));
+    public Integer getCounter() {
+        return counter;
     }
 
-    public void wordsArrayCreator(){
-        this.words = new ArrayList<>(Arrays.asList(getContent().toLowerCase().split(" ")));
-        this.words.removeIf(i -> i.length() < 1);
+    public Function<String, String> killerChars = (txt) -> {
+        return txt.replaceAll("[@#$%^&*()_+=,.!?:;-]", " ");
+    };
+
+    public ArrayList<String> wordsArrayCreator(String text){
+        ArrayList<String> words = new ArrayList<>(Arrays.asList(text.toLowerCase().split(" ")));
+        words.removeIf(i -> i.length() < 1);
+        return words;
     }
 
-    public void wordsCounterDictionaryCreator(){
-        for(String word : this.words){
-            this.wordCounter.merge(word, 1 ,Integer::sum);
+    public Map<String,Integer> wordsCounterDictionaryCreator(ArrayList<String> words){
+        Map<String, Integer> wordCounter = new HashMap<String, Integer>();
+        for(String word : words){
+            wordCounter.merge(word, 1 ,Integer::sum);
             counterIncrement();
         }
+        return wordCounter;
     }
 
     //Następująca funckja nie jest mojego autorstwa
@@ -62,10 +55,12 @@ public class WordCounter {
         return sortedMap;
     }
 
-    public void displayInformation(){
-        System.out.println("Razem słów: "+this.counter);
-        this.wordCounter = sortByValue(wordCounter);
-        this.wordCounter.forEach((k,v) -> System.out.println(k+"\t\t"+v));
+    public Map<String, Integer> displayInformation(String text){
+        killerChars.apply(text);
+        ArrayList<String> words = wordsArrayCreator(text);
+        Map<String, Integer> wordCounter = wordsCounterDictionaryCreator(words);
+        wordCounter = sortByValue(wordCounter);
+        return wordCounter;
     }
 
 }
