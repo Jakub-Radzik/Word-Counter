@@ -4,7 +4,6 @@ import com.radzik.functional.WordCounter;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
