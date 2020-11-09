@@ -1,3 +1,5 @@
+package com.radzik.functional;
+
 import java.util.*;
 import java.util.function.Function;
 

@@ -1,6 +1,13 @@
+package com.radzik.gui;
+
+import com.radzik.functional.WordCounter;
+
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class GraphicalInterface {
     private JFrame frame;
@@ -14,14 +21,14 @@ public class GraphicalInterface {
         return text.getText();
     }
 
-    public void setCharStatisticsContent(String txt) {
+    private void setCharStatisticsContent(String txt) {
         this.charStats.setText(txt);
     }
-    public void setWordStatisticsContent(String txt) {
+    private void setWordStatisticsContent(String txt) {
         this.wordStats.setText(txt);
     }
 
-    GraphicalInterface(){
+    public GraphicalInterface(){
         frame = new JFrame("Word Counter");
         text = new JTextArea(10,20);
         scrollForText = new JScrollPane(text);
@@ -42,6 +49,7 @@ public class GraphicalInterface {
         scrollForText.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollForText.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         text.setLineWrap(true);
+        text.setWrapStyleWord(true);
 
         frame.add(scrollForText);
         frame.add(charStats);
@@ -78,13 +86,39 @@ public class GraphicalInterface {
         }
     }
     class ButtonClicked implements ActionListener{
+
+        private JFrame info;
+        private JTable wordsTable;
+        private JScrollPane scrollTable;
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            StringBuilder information = new StringBuilder();
-            information.append("Word count:\n");
             Map<String, Integer> wordCounter = WordCounter.wordStatsDictionary(getTextContent());
-            wordCounter.forEach((k,v) -> information.append(k).append(" : ").append(v).append("\n"));
-            JOptionPane.showMessageDialog(frame, information);
+            String[][] data = new String[wordCounter.size()][2];
+            Set<String> keys = wordCounter.keySet();
+            Iterator<String> k = keys.iterator();
+            int counter = 0;
+            while(k.hasNext()){
+                String key = k.next();
+                data[counter][0] = key;
+                data[counter][1] = String.valueOf(wordCounter.get(key));
+                counter++;
+            }
+            String[] column ={"Word", "Count"};
+
+
+            info = new JFrame("Word statistics");
+            wordsTable = new JTable(data, column);
+            scrollTable = new JScrollPane(wordsTable);
+            scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollTable.setBounds(10,10,270,450);
+            info.add(scrollTable);
+            info.add(scrollTable);
+            info.setLayout(null);
+            info.setSize(300,500);
+            info.setResizable(false);
+            info.setVisible(true);
         }
     }
     class WindowClose extends WindowAdapter {
