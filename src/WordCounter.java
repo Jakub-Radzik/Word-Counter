@@ -3,27 +3,27 @@ import java.util.function.Function;
 
 public class WordCounter {
 
-    private Integer counter = 0;
+    private static int counter = 0;
 
-    void counterIncrement(){
-        this.counter++;
+    static void counterIncrement(){
+        counter++;
     }
 
     public Integer getCounter() {
-        return counter;
+        return this.counter;
     }
 
-    public Function<String, String> killerChars = (txt) -> {
+    public static Function<String, String> killerChars = (txt) -> {
         return txt.replaceAll("[@#$%^&*()_+=,.!?:;-]", " ");
     };
 
-    public ArrayList<String> wordsArrayCreator(String text){
+    public static ArrayList<String> wordsArrayCreator(String text){
         ArrayList<String> words = new ArrayList<>(Arrays.asList(text.toLowerCase().split(" ")));
         words.removeIf(i -> i.length() < 1);
         return words;
     }
 
-    public Map<String,Integer> wordsCounterDictionaryCreator(ArrayList<String> words){
+    public static Map<String,Integer> wordsCounterDictionaryCreator(ArrayList<String> words){
         Map<String, Integer> wordCounter = new HashMap<String, Integer>();
         for(String word : words){
             wordCounter.merge(word, 1 ,Integer::sum);
@@ -41,7 +41,7 @@ public class WordCounter {
         Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
             public int compare(Map.Entry<String, Integer> o1,
                                Map.Entry<String, Integer> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
+                return (o2.getValue()).compareTo(o1.getValue());
             }
         });
 
@@ -55,8 +55,8 @@ public class WordCounter {
         return sortedMap;
     }
 
-    public Map<String, Integer> displayInformation(String text){
-        killerChars.apply(text);
+    public static Map<String, Integer> wordStatsDictionary(String text){
+        text = killerChars.apply(text);
         ArrayList<String> words = wordsArrayCreator(text);
         Map<String, Integer> wordCounter = wordsCounterDictionaryCreator(words);
         wordCounter = sortByValue(wordCounter);
